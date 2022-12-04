@@ -1,5 +1,5 @@
 
-Sukor=gg.makeRequest("http://yyzn27.cn/lin.php").content --启动次数网址
+Sukor=gg.makeRequest("http://yy.zn27.cn/lin.php").content --启动次数网址
 
 XR=Sukor:match("全网启动次数\":(.-),\"")  --这个不要改，改了会错误
 
